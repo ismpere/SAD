@@ -1,6 +1,17 @@
 var net = require("net");
-var HOST = "127.0.0.1";
-var PORT = 9000;
+
+// Extract the host and port args if exists
+var input = process.argv[2];
+var inputPort;
+var inputHost;
+if (input && input.includes(":")) {
+  inputHost = input.split(":")[0];
+  inputPort = input.split(":")[1];
+}
+
+// Set port and host values depending on the input args
+const PORT = process.env.PORT || inputPort || 9000;
+const HOST = inputHost || "127.0.0.1";
 
 var dm = require("./dm.js");
 
@@ -54,7 +65,6 @@ server = net.createServer(function(sock) {
         dm.addPrivateMessage(invo.msg);
         console.log("Add private message");
         break;
-      // TODO: complete all forum functions
     }
     sock.write(JSON.stringify(reply));
   });

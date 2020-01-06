@@ -3,14 +3,16 @@ var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 
+// Extract the host and port args if exists
 var input = process.argv[2];
 var inputPort;
 var inputHost;
-if (input) {
-  inputHost = inputPort.split(":")[0];
-  inputPort = inputPort.split(":")[1];
+if (input && input.includes(":")) {
+  inputHost = input.split(":")[0];
+  inputPort = input.split(":")[1];
 }
 
+// Set port and host values depending on the input args
 const PORT = process.env.PORT || inputPort || 9000;
 const HOST = inputHost || "127.0.0.1";
 

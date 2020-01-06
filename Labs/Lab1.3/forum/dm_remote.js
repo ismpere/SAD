@@ -34,7 +34,6 @@ client.on("data", function(data) {
 function processData(data) {
   var reply = JSON.parse(data.toString());
   switch (reply.what) {
-    // TODO complete list of commands
     case "login":
       console.log(
         "We received a reply for: " + reply.what + ":" + reply.invoId
