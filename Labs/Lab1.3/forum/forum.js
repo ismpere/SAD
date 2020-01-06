@@ -2,7 +2,19 @@ var express = require("express");
 var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
-var dm = require("./dm_local.js");
+
+var input = process.argv[2];
+var inputPort;
+var inputHost;
+if (input) {
+  inputHost = inputPort.split(":")[0];
+  inputPort = inputPort.split(":")[1];
+}
+
+const PORT = process.env.PORT || inputPort || 9000;
+const HOST = inputHost || "127.0.0.1";
+
+var dm = require("./dm_remote.js");
 
 var viewsdir = __dirname + "/views";
 app.set("views", viewsdir);
@@ -16,6 +28,7 @@ function get_page(req, res) {
 // Called on server startup
 function on_startup() {
   console.log("Starting: server current directory:" + __dirname);
+  dm.Start(HOST, PORT);
 }
 
 // serve static css as is

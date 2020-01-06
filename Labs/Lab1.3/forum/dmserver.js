@@ -20,12 +20,39 @@ server = net.createServer(function(sock) {
     switch (invo.what) {
       case "get subject list":
         reply.obj = dm.getSubjectList();
+        console.log("Send subject list: " + reply.obj);
+        break;
+      case "get user list":
+        reply.obj = dm.getUserList();
+        console.log("Send user list: " + reply.obj);
         break;
       case "get public message list":
-        reply.obj = dm.getPublicMessageList(cmd.sbj);
+        reply.obj = dm.getPublicMessageList(invo.sbj);
+        console.log("Send public message list");
         break;
       case "get private message list":
-        reply.obj = dm.getPrivateMessageList(cmd.u1, cmd.u2);
+        reply.obj = dm.getPrivateMessageList(invo.u1, invo.u2);
+        console.log("Send private message list");
+        break;
+      case "login":
+        console.log("Send login");
+        reply.obj = dm.login(invo.user.u, invo.user.p);
+        break;
+      case "add user":
+        console.log("Send add user");
+        reply.obj = dm.addUser(invo.user.u, invo.user.p);
+        break;
+      case "add subject":
+        console.log("Send add subject");
+        reply.obj = dm.addSubject(invo.sbj);
+        break;
+      case "add public message":
+        dm.addPublicMessage(invo.msg);
+        console.log("Add public message");
+        break;
+      case "add private message":
+        dm.addPrivateMessage(invo.msg);
+        console.log("Add private message");
         break;
       // TODO: complete all forum functions
     }
