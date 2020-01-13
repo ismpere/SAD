@@ -73,5 +73,8 @@ dm.Start(HOST, PORT, function() {
         console.log(JSON.stringify(ml));
       });
       break;
+    default:
+      console.log("Invalid option");
+      break;
   }
 });

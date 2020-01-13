@@ -1,12 +1,13 @@
 var net = require("net");
+var zmq = require("zeromq");
 
-var client = new net.Socket();
+var zmqReq = zmq.socket("req");
 
 exports.Start = function(host, port, cb) {
-  client.connect(port, host, function() {
-    console.log("Connected to: " + host + ":" + port);
-    if (cb != null) cb();
-  });
+  var fullUrl = "tcp://" + host + ":" + port;
+  zmqReq.connect(fullUrl);
+  console.log("Connected to: " + fullUrl);
+  if (cb != null) cb();
 };
 
 var callbacks = {}; // hash of callbacks. Key is invoId
@@ -17,7 +18,7 @@ var invoCounter = 0; // current invocation number is key to access "callbacks".
 // extract the reply, find the callback, and call it.
 // Its useful to study "exports" functions before studying this one.
 //
-client.on("data", function(data) {
+zmqReq.on("message", function(data) {
   console.log("data comes in: " + data);
   var datas = [data];
   if (data.includes("}{")) {
@@ -99,7 +100,7 @@ function processData(data) {
 }
 
 // Add a 'close' event handler for the client socket
-client.on("close", function() {
+zmqReq.on("close", function() {
   console.log("Connection closed");
 });
 
@@ -124,49 +125,50 @@ exports.addUser = function(u, p, cb) {
   invo = new Invo("add user", cb);
   user = { u: u, p: p };
   invo.user = user;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 // Adds a new subject to subject list. Returns -1 if already exists, id on success
 exports.addSubject = function(sbj, cb) {
   var invo = new Invo("add subject", cb);
   invo.sbj = sbj;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 // adds a public message to storage
 exports.addPublicMessage = function(msg, cb) {
   var invo = new Invo("add public message", cb);
   invo.msg = msg;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 // adds a private message to storage
 exports.addPrivateMessage = function(msg, cb) {
   var invo = new Invo("add private message", cb);
   invo.msg = msg;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 exports.getPublicMessageList = function(sbj, cb) {
   var invo = new Invo("get public message list", cb);
   invo.sbj = sbj;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 exports.getPrivateMessageList = function(u1, u2, cb) {
   invo = new Invo("get private message list", cb);
   invo.u1 = u1;
   invo.u2 = u2;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
 
 exports.getSubjectList = function(cb) {
-  client.write(JSON.stringify(new Invo("get subject list", cb)));
+  zmqReq.send(JSON.stringify(new Invo("get subject list", cb)));
 };
 
 exports.getUserList = function(cb) {
-  client.write(JSON.stringify(new Invo("get user list", cb)));
+  console.log("Llega");
+  zmqReq.send(JSON.stringify(new Invo("get user list", cb)));
 };
 
 // Tests if credentials are valid, returns true on success
@@ -174,5 +176,5 @@ exports.login = function(u, p, cb) {
   invo = new Invo("login", cb);
   user = { u: u, p: p };
   invo.user = user;
-  client.write(JSON.stringify(invo));
+  zmqReq.send(JSON.stringify(invo));
 };
