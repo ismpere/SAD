@@ -34,68 +34,58 @@ zmqReq.on("message", function(data) {
 
 function processData(data) {
   var reply = JSON.parse(data.toString());
+  console.log(
+    "We received a reply for: " +
+      reply.what +
+      ":" +
+      reply.invoId +
+      "\n" +
+      "\n###################################################################\n"
+  );
   switch (reply.what) {
     case "login":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "add user":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "add subject":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "get private message list":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "get public message list":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "get user list":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "get subject list":
-      console.log(
-        "We received a reply for: " + reply.what + ":" + reply.invoId
-      );
       callbacks[reply.invoId](reply.obj); // call the stored callback, one argument
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "add public message":
-      console.log("We received a reply for add command");
       callbacks[reply.invoId](); // call the stored callback, no arguments
       delete callbacks[reply.invoId]; // remove from hash
       break;
     case "add private message":
-      console.log("We received a reply for add command");
+      callbacks[reply.invoId](); // call the stored callback, no arguments
+      delete callbacks[reply.invoId]; // remove from hash
+      break;
+    case "publish public message":
       callbacks[reply.invoId](); // call the stored callback, no arguments
       delete callbacks[reply.invoId]; // remove from hash
       break;
     default:
       console.log("Panic: we got this: " + reply.what);
+      break;
   }
 }
 
@@ -138,6 +128,13 @@ exports.addSubject = function(sbj, cb) {
 // adds a public message to storage
 exports.addPublicMessage = function(msg, cb) {
   var invo = new Invo("add public message", cb);
+  invo.msg = msg;
+  zmqReq.send(JSON.stringify(invo));
+};
+
+// publish a public message to forums
+exports.publishPublicMessage = function(msg, cb) {
+  var invo = new Invo("publish public message", cb);
   invo.msg = msg;
   zmqReq.send(JSON.stringify(invo));
 };

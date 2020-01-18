@@ -67,6 +67,12 @@ dm.Start(HOST, PORT, function() {
         console.log(JSON.stringify(ml));
       });
       break;
+    case "publish public message":
+      dm.publishPublicMessage(args[1], function(ml) {
+        console.log("here it is:");
+        console.log(JSON.stringify(ml));
+      });
+      break;
     case "add private message":
       dm.addPrivateMessage(args[1], function(ml) {
         console.log("here it is:");

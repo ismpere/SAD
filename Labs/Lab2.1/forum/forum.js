@@ -2,21 +2,36 @@ var express = require("express");
 var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+var dm = require("./dm_remote.js");
+var zmq = require("zeromq");
 
 // Extract the host and port args if exists
-var input = process.argv[2];
-var inputPort;
-var inputHost;
-if (input && input.includes(":")) {
-  inputHost = input.split(":")[0];
-  inputPort = input.split(":")[1];
+if (process.argv.length > 2) {
+  var input = process.argv[2];
+  var inputPort;
+  var inputPortPub;
+  var inputHost;
+
+  if (input.includes(":")) {
+    inputHost = input.split(":")[0];
+    inputPort = input.split(":")[1];
+  } else {
+    inputPortPub = input;
+  }
+
+  if (process.argv.length > 3) {
+    inputPortPub = process.argv[3];
+  }
 }
 
 // Set port and host values depending on the input args
 const PORT = process.env.PORT || inputPort || 9000;
+const PORT_SUB = process.env.PORT || inputPortPub || 9001;
 const HOST = inputHost || "127.0.0.1";
+const URL_SUB = "tcp://" + HOST + ":" + PORT_SUB;
+const TOPIC = "Public message";
 
-var dm = require("./dm_remote.js");
+var zmqSub = zmq.socket("sub");
 
 var viewsdir = __dirname + "/views";
 app.set("views", viewsdir);
@@ -31,6 +46,9 @@ function get_page(req, res) {
 function on_startup() {
   console.log("Starting: server current directory:" + __dirname);
   dm.Start(HOST, PORT);
+  zmqSub.connect(URL_SUB);
+  zmqSub.subscribe(TOPIC);
+  console.log("Subscriber connected to " + URL_SUB + "...\n");
 }
 
 // serve static css as is
@@ -46,10 +64,28 @@ app.get("/:page", function(req, res) {
   get_page(req, res);
 });
 
+zmqSub.on("message", function(topic, msg) {
+  var msgStr = msg.toString();
+  console.log(
+    "received a message related to:",
+    topic.toString(),
+    "containing message:",
+    msgStr + "\n"
+  );
+  dm.addPublicMessage(msgStr, function() {
+    io.emit("message", msgStr);
+  });
+});
+
+// Add a 'close' event handler to this instance of socket
+zmqSub.on("close", function(data) {
+  console.log("Connection closed");
+});
+
 io.on("connection", function(sock) {
-  console.log("Event: client connected");
+  console.log("Event: client connected\n");
   sock.on("disconnect", function() {
-    console.log("Event: client disconnected");
+    console.log("Event: client disconnected\n");
   });
 
   // on messages that come from client, store them, and send them to every
@@ -64,8 +100,8 @@ io.on("connection", function(sock) {
         io.emit("message", JSON.stringify(msg));
       });
     } else {
-      dm.addPublicMessage(msg, function() {
-        io.emit("message", JSON.stringify(msg));
+      dm.publishPublicMessage(msg, function() {
+        console.log("Msg: " + JSON.stringify(msg) + " published succesfully\n");
       });
     }
   });
