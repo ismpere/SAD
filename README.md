@@ -25,6 +25,7 @@ The labs done are in the Labs folder and are the following:
 - Lab 1.1: Introducción a Javascript y Node.js - Introduction to Javascript and Node.js
 - Lab 1.2: Desarrollo de un Foro. Cliente/Servidor - Forum Development. Client/Server
 - Lab 1.3: Desarrollo de un Foro. Servidor de datos y cliente - Forum Development. Data server and client
+- Lab 2.1: Backend distribuido. ZeroMQ - Distributed backend. ZeroMQ
 
 <!-- ## Seminarios - Seminars
 
