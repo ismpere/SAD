@@ -63,6 +63,9 @@ node dmserver.js
 
 ```
 node dmclient.js "operation" arg1 ...
+
+Ex:
+node dmclient.js "publish public message" '{"msg":"Test dmClient","from":"mudito","isPrivate":false,"to":"id0","ts":"2020-01-18T20:10:33.896Z"}'
 ```
 
 ---

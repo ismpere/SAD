@@ -93,6 +93,9 @@ zmqRep.bind(URL, function(err) {
               console.log("Add private message");
               break;
           }
+          console.log(
+            "\n###################################################################\n"
+          );
 
           // Switch to pub options
           switch (invo.what) {
