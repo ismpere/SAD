@@ -8,6 +8,7 @@ var inputHost;
 var servers;
 var subZmqSockets = [];
 var zmqRep = zmq.socket("rep");
+var delay;
 
 // Process the input args
 if (process.argv.length > 2) {
@@ -16,6 +17,8 @@ if (process.argv.length > 2) {
 
     if (input.includes("tcp://")) {
       servers = input.split(",");
+    } else if (input.includes("-r")) {
+      delay = parseInt(input.replace("-r", ""));
     } else if (input.includes(":")) {
       inputHost = input.split(":")[0];
       inputPort = input.split(":")[1];
@@ -33,6 +36,7 @@ const URL = "tcp://" + HOST + ":" + PORT;
 const URL_PUB = "tcp://" + HOST + ":" + PORT_PUB;
 const TOPIC = "checkpoint";
 const SERVERS = servers ? [URL_PUB].concat(servers) : [URL_PUB];
+const DELAY = delay;
 
 console.log("Suscriber server list: " + SERVERS);
 
@@ -113,6 +117,7 @@ function startServer() {
     // Switch to pub options
     switch (invo.what) {
       case "publish public message":
+        retardo(DELAY);
         subZmqSockets.forEach(zmqPub => publishMessage(zmqPub, invo.msg));
         break;
     }
@@ -138,4 +143,17 @@ function closeSocket(zmqSock) {
   zmqSock.on("close", function(data) {
     console.log("Connection closed");
   });
+}
+
+// Create a delay of n milliseconds
+function retardo(n) {
+  if (n) {
+    console.log("Starting delay...");
+    time = new Date().getTime();
+    time2 = time + n;
+    while (time < time2) {
+      time = new Date().getTime();
+    }
+    console.log("End delay");
+  }
 }
