@@ -41,7 +41,7 @@ node dmserver.js ['host:port' (rep address)] [Port (pub port)]
 node forum.js ['host:port' (req address)] [Port (sub port)]
 ```
 
-3. Probar el seminario - Test the seminar
+3. Probar el laboratorio - Test the lab
 
 &emsp;[http://localhost:10000/](http://localhost:10000/)
 

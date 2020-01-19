@@ -40,7 +40,7 @@ node dmserver.js
 node forum.js
 ```
 
-3. Probar el seminario - Test the seminar
+3. Probar el laboratorio - Test the lab
 
 &emsp;[http://localhost:10000/](http://localhost:10000/)
 
