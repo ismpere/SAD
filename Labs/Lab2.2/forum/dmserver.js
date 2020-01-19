@@ -45,20 +45,13 @@ zmqRep.bind(URL, function(err) {
     for (i = 0; i < SERVERS.length; i++) {
       var url = SERVERS[i];
       var zmqPub = zmq.socket("pub");
-      zmqPub.bind(url, function(err) {
-        if (err) {
-          console.error("Listening publisher error: " + err + ": " + url);
-        } else {
-          //TODO: Print url of binded socket
-          console.log("Listening publisher..." + "\n");
-          subZmqSockets.push(zmqPub);
-
-          // Start server when every socket is binded
-          if (subZmqSockets.length === SERVERS.length) {
-            startServer();
-          }
-        }
-      });
+      zmqPub.connect(url);
+      console.log("Listening publisher..." + "\n");
+      subZmqSockets.push(zmqPub);
+      // Start server when every socket is binded
+      if (subZmqSockets.length === SERVERS.length) {
+        startServer();
+      }
     }
   }
 });
@@ -120,7 +113,6 @@ function startServer() {
     // Switch to pub options
     switch (invo.what) {
       case "publish public message":
-        dm.addPublicMessage(invo.msg);
         subZmqSockets.forEach(zmqPub => publishMessage(zmqPub, invo.msg));
         break;
     }
