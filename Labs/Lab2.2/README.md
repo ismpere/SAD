@@ -32,13 +32,13 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js
+node dmserver.js ['host:port' (rep address)] [Port (pub port)] ['host:port,...' (sub servers)]
 ```
 
 2. Arrancar forum - Run forum
 
 ```
-node forum.js
+node forum.js ['host:port' (req address)] [Port (sub port)] [-pPort (server listen port)]
 ```
 
 3. Probar el seminario - Test the seminar
@@ -56,13 +56,13 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js
+node dmserver.js ['host:port' (rep port)] [Port (pub port)] ['host:port,...' (sub servers)]
 ```
 
 3. Ejecutar dmclient - Run dmclient
 
 ```
-node dmclient.js "operation" arg1 ...
+node dmclient.js 'operation' [arg1 ...]
 
 Ex:
 node dmclient.js "publish public message" '{"msg":"Test dmClient","from":"mudito","isPrivate":false,"to":"id0","ts":"2020-01-18T20:10:33.896Z"}'

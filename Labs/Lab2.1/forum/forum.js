@@ -8,6 +8,7 @@ var zmq = require("zeromq");
 var inputPort;
 var inputPortPub;
 var inputHost;
+var zmqSub = zmq.socket("sub");
 
 // Extract the host and port args if exists
 if (process.argv.length > 2) {
@@ -29,8 +30,6 @@ const PORT_SUB = process.env.PORT || inputPortPub || 9001;
 const HOST = inputHost || "127.0.0.1";
 const URL_SUB = "tcp://" + HOST + ":" + PORT_SUB;
 const TOPIC = "Public message";
-
-var zmqSub = zmq.socket("sub");
 
 var viewsdir = __dirname + "/views";
 app.set("views", viewsdir);
