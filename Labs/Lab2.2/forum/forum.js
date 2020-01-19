@@ -79,16 +79,27 @@ app.get("/:page", function(req, res) {
 });
 
 zmqSub.on("message", function(topic, msg) {
-  var msgStr = msg.toString();
-  console.log(
-    "received a message related to:",
-    topic.toString(),
-    "containing message:",
-    msgStr + "\n"
-  );
-  dm.addPublicMessage(JSON.parse(msgStr), function() {
-    io.emit("message", msgStr);
-  });
+  var msgStr;
+  var msgJson;
+  if (msg) {
+    msgStr = msg.toString();
+    try {
+      msgJson = JSON.parse(msgStr);
+    } catch (e) {
+      console.log("Error parsing msg: " + e);
+    }
+  }
+  if (msgJson) {
+    console.log(
+      "received a message related to:",
+      topic.toString(),
+      "containing message:",
+      msgStr + "\n"
+    );
+    dm.addPublicMessage(msgJson, function() {
+      io.emit("message", msgStr);
+    });
+  }
 });
 
 // Add a 'close' event handler to this instance of socket

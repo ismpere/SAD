@@ -100,7 +100,6 @@ zmqRep.bind(URL, function(err) {
           // Switch to pub options
           switch (invo.what) {
             case "publish public message":
-              dm.addPublicMessage(invo.msg);
               zmqPub.send([TOPIC, JSON.stringify(invo.msg)]);
               console.log(
                 "Publish data in " +

@@ -46,9 +46,9 @@ zmqRep.bind(URL, function(err) {
       var url = SERVERS[i];
       var zmqPub = zmq.socket("pub");
       zmqPub.connect(url);
-      console.log("Listening publisher..." + "\n");
+      console.log("Listening publisher on " + url + "..." + "\n");
       subZmqSockets.push(zmqPub);
-      // Start server when every socket is binded
+      // Start server when every socket is connected
       if (subZmqSockets.length === SERVERS.length) {
         startServer();
       }
