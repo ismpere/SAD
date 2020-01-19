@@ -13,7 +13,7 @@ The neccessary software to run the seminars is:
 - [Node](https://nodejs.org) - El entorno de ejecución utilizado - The execution environment used
 - [Angular](https://angular.io) - El framework web utilizado- The web framework used
 - [Express](https://expressjs.com) - La infraestructura web utilizada - The web infraestructure used
-- [MongoDB](https://www.mongodb.com) - La base de datos utilizada - The database used
+  <!-- - [MongoDB](https://www.mongodb.com) - La base de datos utilizada - The database used -->
 - [ZeroMQ](https://zeromq.org/) - La librería de paso de mensajes utilizada - The messaging library used
 
 ## Laboratorios - Labs
@@ -26,6 +26,7 @@ The labs done are in the Labs folder and are the following:
 - Lab 1.2: Desarrollo de un Foro. Cliente/Servidor - Forum Development. Client/Server
 - Lab 1.3: Desarrollo de un Foro. Servidor de datos y cliente - Forum Development. Data server and client
 - Lab 2.1: Backend distribuido. ZeroMQ - Distributed backend. ZeroMQ
+- Lab 2.2: Backend distribuido. Grupo de servidores - Distributed Backend. Server group
 
 <!-- ## Seminarios - Seminars
 
