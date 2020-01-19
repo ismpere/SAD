@@ -1,22 +1,24 @@
-var net = require("net");
 var zmq = require("zeromq");
+var dm = require("./dm.js");
 
-// Extract the host and port args if exists
+var input = process.argv[2];
+var inputPort;
+var inputPortPub;
+var inputHost;
+var zmqRep = zmq.socket("rep");
+var zmqPub = zmq.socket("pub");
+
+// Process the input args
 if (process.argv.length > 2) {
-  var input = process.argv[2];
-  var inputPort;
-  var inputPortPub;
-  var inputHost;
+  for (i = 2; i < process.argv.length; i++) {
+    var input = process.argv[i];
 
-  if (input.includes(":")) {
-    inputHost = input.split(":")[0];
-    inputPort = input.split(":")[1];
-  } else {
-    inputPortPub = input;
-  }
-
-  if (process.argv.length > 3) {
-    inputPortPub = process.argv[3];
+    if (input.includes(":")) {
+      inputHost = input.split(":")[0];
+      inputPort = input.split(":")[1];
+    } else {
+      inputPortPub = input;
+    }
   }
 }
 
@@ -28,11 +30,6 @@ const URL = "tcp://" + HOST + ":" + PORT;
 const URL_PUB = "tcp://" + HOST + ":" + PORT_PUB;
 const TOPIC = "Public message";
 
-var dm = require("./dm.js");
-
-var zmqRep = zmq.socket("rep");
-var zmqPub = zmq.socket("pub");
-
 zmqRep.bind(URL, function(err) {
   if (err) {
     console.error("Listening replier error: " + err + ": " + URL);
@@ -41,7 +38,7 @@ zmqRep.bind(URL, function(err) {
 
     zmqPub.bind(URL_PUB, function(err2) {
       if (err2) {
-        console.error("Listening replier error: " + err + ": " + URL_PUB);
+        console.error("Listening publisher error: " + err + ": " + URL_PUB);
       } else {
         console.log("Listening publisher on " + URL_PUB + "..." + "\n");
 
@@ -100,7 +97,6 @@ zmqRep.bind(URL, function(err) {
           // Switch to pub options
           switch (invo.what) {
             case "publish public message":
-              dm.addPublicMessage(invo.msg);
               zmqPub.send([TOPIC, JSON.stringify(invo.msg)]);
               console.log(
                 "Publish data in " +

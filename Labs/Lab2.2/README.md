@@ -1,6 +1,6 @@
-# Lab 1.3
+# Lab 2.2
 
-Backend distribuido. ZeroMQ <br> Distributed Backend. ZeroMQ
+Backend distribuido. Grupo de servidores <br> Distributed Backend. Server group
 
 ### Prerequisitos - Prerequisites
 
@@ -11,6 +11,7 @@ The neccessary software to run this exercise is:
 - [Node](https://nodejs.org) - El entorno de ejecución utilizado - The execution environment used
 - [Angular](https://angular.io) - El framework web utilizado- The web framework used
 - [Express](https://expressjs.com) - La infraestructura web utilizada - The web infraestructure used
+- [ZeroMQ](https://zeromq.org/) - La librería de paso de mensajes utilizada - The messaging library used
 
 ---
 
@@ -31,13 +32,13 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js
+node dmserver.js ['host:port' (rep address)] [Port (pub port)] ['host:port,...' (sub servers)]
 ```
 
 2. Arrancar forum - Run forum
 
 ```
-node forum.js
+node forum.js ['host:port' (req address)] [Port (sub port)] [-pPort (server listen port)]
 ```
 
 3. Probar el seminario - Test the seminar
@@ -55,13 +56,16 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js
+node dmserver.js ['host:port' (rep port)] [Port (pub port)] ['host:port,...' (sub servers)]
 ```
 
 3. Ejecutar dmclient - Run dmclient
 
 ```
-node dmclient.js "operation" arg1 ...
+node dmclient.js 'operation' [arg1 ...]
+
+Ex:
+node dmclient.js "publish public message" '{"msg":"Test dmClient","from":"mudito","isPrivate":false,"to":"id0","ts":"2020-01-18T20:10:33.896Z"}'
 ```
 
 ---

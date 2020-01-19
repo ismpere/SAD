@@ -8,14 +8,16 @@ var zmq = require("zeromq");
 var inputPort;
 var inputPortPub;
 var inputHost;
-var zmqSub = zmq.socket("sub");
+var listenPort;
 
 // Extract the host and port args if exists
 if (process.argv.length > 2) {
   for (i = 2; i < process.argv.length; i++) {
     var input = process.argv[i];
 
-    if (input.includes(":")) {
+    if (input.includes("-p")) {
+      listenPort = input.replace("-p", "");
+    } else if (input.includes(":")) {
       inputHost = input.split(":")[0];
       inputPort = input.split(":")[1];
     } else {
@@ -29,7 +31,10 @@ const PORT = process.env.PORT || inputPort || 9000;
 const PORT_SUB = process.env.PORT || inputPortPub || 9001;
 const HOST = inputHost || "127.0.0.1";
 const URL_SUB = "tcp://" + HOST + ":" + PORT_SUB;
-const TOPIC = "Public message";
+const LISTEN_PORT = listenPort || 10000;
+const TOPIC = "checkpoint";
+
+var zmqSub = zmq.socket("sub");
 
 var viewsdir = __dirname + "/views";
 app.set("views", viewsdir);
@@ -42,11 +47,22 @@ function get_page(req, res) {
 
 // Called on server startup
 function on_startup() {
-  console.log("Starting: server current directory:" + __dirname);
+  console.log(
+    "Starting... \nServer current directory:" +
+      __dirname +
+      "\nServer current port: " +
+      LISTEN_PORT +
+      "\n"
+  );
   dm.Start(HOST, PORT);
-  zmqSub.connect(URL_SUB);
-  zmqSub.subscribe(TOPIC);
-  console.log("Subscriber connected to " + URL_SUB + "...\n");
+  zmqSub.bind(URL_SUB, function(err) {
+    if (err) {
+      console.error("Listening suscriber error: " + err + ": " + URL_SUB);
+    } else {
+      zmqSub.subscribe(TOPIC);
+      console.log("Subscriber connected to " + URL_SUB + "...\n");
+    }
+  });
 }
 
 // serve static css as is
@@ -190,4 +206,4 @@ io.on("connection", function(sock) {
 });
 
 // Listen for connections !!
-http.listen(10000, on_startup);
+http.listen(LISTEN_PORT, on_startup);
