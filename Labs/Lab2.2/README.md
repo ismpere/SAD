@@ -93,7 +93,7 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js ['host:port' (rep port)] [Port (pub port)] ['host:port,...' (sub servers)]
+node dmserver.js ['host:port' (rep port)] [Port (pub port)]
 ```
 
 3. Ejecutar dmclient - Run dmclient

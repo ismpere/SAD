@@ -27,6 +27,7 @@ The labs done are in the Labs folder and are the following:
 - Lab 1.3: Desarrollo de un Foro. Servidor de datos y cliente - Forum Development. Data server and client
 - Lab 2.1: Backend distribuido. ZeroMQ - Distributed backend. ZeroMQ
 - Lab 2.2: Backend distribuido. Grupo de servidores - Distributed Backend. Server group
+- Lab 2.3: Backend distribuido. Consistencia - Distributed Backend. Consistency
 
 <!-- ## Seminarios - Seminars
 
