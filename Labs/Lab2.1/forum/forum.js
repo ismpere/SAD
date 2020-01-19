@@ -5,22 +5,21 @@ var io = require("socket.io")(http);
 var dm = require("./dm_remote.js");
 var zmq = require("zeromq");
 
+var inputPort;
+var inputPortPub;
+var inputHost;
+
 // Extract the host and port args if exists
 if (process.argv.length > 2) {
-  var input = process.argv[2];
-  var inputPort;
-  var inputPortPub;
-  var inputHost;
+  for (i = 2; i < process.argv.length; i++) {
+    var input = process.argv[i];
 
-  if (input.includes(":")) {
-    inputHost = input.split(":")[0];
-    inputPort = input.split(":")[1];
-  } else {
-    inputPortPub = input;
-  }
-
-  if (process.argv.length > 3) {
-    inputPortPub = process.argv[3];
+    if (input.includes(":")) {
+      inputHost = input.split(":")[0];
+      inputPort = input.split(":")[1];
+    } else {
+      inputPortPub = input;
+    }
   }
 }
 

@@ -5,22 +5,24 @@ var io = require("socket.io")(http);
 var dm = require("./dm_remote.js");
 var zmq = require("zeromq");
 
+var inputPort;
+var inputPortPub;
+var inputHost;
+var listenPort;
+
 // Extract the host and port args if exists
 if (process.argv.length > 2) {
-  var input = process.argv[2];
-  var inputPort;
-  var inputPortPub;
-  var inputHost;
+  for (i = 2; i < process.argv.length; i++) {
+    var input = process.argv[i];
 
-  if (input.includes(":")) {
-    inputHost = input.split(":")[0];
-    inputPort = input.split(":")[1];
-  } else {
-    inputPortPub = input;
-  }
-
-  if (process.argv.length > 3) {
-    inputPortPub = process.argv[3];
+    if (input.includes("-p")) {
+      listenPort = input.replace("-p", "");
+    } else if (input.includes(":")) {
+      inputHost = input.split(":")[0];
+      inputPort = input.split(":")[1];
+    } else {
+      inputPortPub = input;
+    }
   }
 }
 
@@ -29,7 +31,8 @@ const PORT = process.env.PORT || inputPort || 9000;
 const PORT_SUB = process.env.PORT || inputPortPub || 9001;
 const HOST = inputHost || "127.0.0.1";
 const URL_SUB = "tcp://" + HOST + ":" + PORT_SUB;
-const TOPIC = "Public message";
+const LISTEN_PORT = listenPort || 10000;
+const TOPIC = "checkpoint";
 
 var zmqSub = zmq.socket("sub");
 
@@ -44,7 +47,13 @@ function get_page(req, res) {
 
 // Called on server startup
 function on_startup() {
-  console.log("Starting: server current directory:" + __dirname);
+  console.log(
+    "Starting... \nServer current directory:" +
+      __dirname +
+      "\nServer current port: " +
+      LISTEN_PORT +
+      "\n"
+  );
   dm.Start(HOST, PORT);
   zmqSub.connect(URL_SUB);
   zmqSub.subscribe(TOPIC);
@@ -181,4 +190,4 @@ io.on("connection", function(sock) {
 });
 
 // Listen for connections !!
-http.listen(10000, on_startup);
+http.listen(LISTEN_PORT, on_startup);

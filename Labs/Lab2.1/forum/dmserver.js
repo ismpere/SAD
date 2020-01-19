@@ -41,7 +41,7 @@ zmqRep.bind(URL, function(err) {
 
     zmqPub.bind(URL_PUB, function(err2) {
       if (err2) {
-        console.error("Listening replier error: " + err + ": " + URL_PUB);
+        console.error("Listening publisher error: " + err + ": " + URL_PUB);
       } else {
         console.log("Listening publisher on " + URL_PUB + "..." + "\n");
 

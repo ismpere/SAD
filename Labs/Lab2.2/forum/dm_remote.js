@@ -164,7 +164,6 @@ exports.getSubjectList = function(cb) {
 };
 
 exports.getUserList = function(cb) {
-  console.log("Llega");
   zmqReq.send(JSON.stringify(new Invo("get user list", cb)));
 };
 
