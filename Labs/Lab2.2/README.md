@@ -29,6 +29,40 @@ To install and execute the exercise the necessary steps are:
 npm install
 ```
 
+2. Arrancar runner - Run runner
+
+```
+node runner.js
+```
+
+3. Probar el laboratorio - Test the lab
+
+El runner despliega tres foros - The runner deploys three forums:
+
+- Main server listening on http://localhost:10000/
+
+  - Rep/Req address: 127.0.0.1:9000
+  - Pub/Sub port: 9001
+
+- Second server listening on http://localhost:10001/
+
+  - Rep/Req address: 127.0.0.1:9005
+  - Pub/Sub port: 9006
+
+- Third server listening on http://localhost:10002/
+  - Rep/Req address: 127.0.0.1:9008
+  - Pub/Sub port: 9009
+
+---
+
+#### Test the forum manually
+
+1. Instalar - Install
+
+```
+npm install
+```
+
 2. Arrancar dmserver - Run dmserver
 
 ```
@@ -41,9 +75,12 @@ node dmserver.js ['host:port' (rep address)] [Port (pub port)] ['host:port,...' 
 node forum.js ['host:port' (req address)] [Port (sub port)] [-pPort (server listen port)]
 ```
 
-3. Probar el seminario - Test the seminar
+3. Probar el laboratorio - Test the lab
 
-&emsp;[http://localhost:10000/](http://localhost:10000/)
+&emsp;[http://localhost:10000/](http://localhost:10000/) <br>
+&emsp;http://localhost:port/...
+
+---
 
 #### Test the server
 
