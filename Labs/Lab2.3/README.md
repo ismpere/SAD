@@ -127,9 +127,9 @@ node tester.js "base"
 
 3. Probar los foros - Test forums
 
-   - Forum1: [localhost:10000/](localhost:10000/)
-   - Forum2: [localhost:10001/](localhost:10001/)
-   - Forum3: [localhost:10002/](localhost:10002/)
+   - Forum1: [http://localhost:10000/](http://localhost:10000/)
+   - Forum2: [http://localhost:10001/](http://localhost:10001/)
+   - Forum3: [http://localhost:10002/](http://localhost:10002/)
 
 <!-- El foro se comporta de manera esperada y los mensajes se propagan adecuadamente por el resto de servidores y foros.<br>
 The forum behaves as expected and the messages are properly propagated to other servers and forums. -->
@@ -187,9 +187,9 @@ node tester.js 2
 
 2. Observar el resultado del test - See the test result
 
-   - Forum1: [localhost:10000/](localhost:10000/)
-   - Forum2: [localhost:10001/](localhost:10001/)
-   - Forum3: [localhost:10002/](localhost:10002/)
+   - Forum1: [http://localhost:10000/](http://localhost:10000/)
+   - Forum2: [http://localhost:10001/](http://localhost:10001/)
+   - Forum3: [http://localhost:10002/](http://localhost:10002/)
 
 ---
 
