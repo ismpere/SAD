@@ -62,14 +62,8 @@ dm.Start(HOST, PORT, function() {
       });
       break;
     case "add public message":
-      dm.addPublicMessage(args[1], function(ml) {
-        console.log("here it is:");
-        console.log(JSON.stringify(ml));
-      });
-      break;
-    case "publish public message":
       var msjJson = JSON.parse(args[1]);
-      dm.publishPublicMessage(msjJson, function() {
+      dm.addPublicMessage(msjJson, function() {
         console.log("Msg: " + args[1] + " published succesfully\n");
       });
       break;

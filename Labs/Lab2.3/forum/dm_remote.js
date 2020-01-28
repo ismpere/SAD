@@ -79,10 +79,6 @@ function processData(data) {
       callbacks[reply.invoId](); // call the stored callback, no arguments
       delete callbacks[reply.invoId]; // remove from hash
       break;
-    case "publish public message":
-      callbacks[reply.invoId](); // call the stored callback, no arguments
-      delete callbacks[reply.invoId]; // remove from hash
-      break;
     default:
       console.log("Panic: we got this: " + reply.what);
       break;

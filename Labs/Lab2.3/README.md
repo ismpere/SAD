@@ -9,7 +9,6 @@ El software necesario para ejecutar este ejercicio es:
 The neccessary software to run this exercise is:
 
 - [Node](https://nodejs.org) - El entorno de ejecución utilizado - The execution environment used
-- [Angular](https://angular.io) - El framework web utilizado- The web framework used
 - [Express](https://expressjs.com) - La infraestructura web utilizada - The web infraestructure used
 - [ZeroMQ](https://zeromq.org/) - La librería de paso de mensajes utilizada - The messaging library used
 
@@ -66,7 +65,7 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js ['host:port' (rep address)] [Port (pub port)] ['host:port,...' (sub servers)]
+node dmserver.js ['host:port' (rep address)] [-ppXXXX (pub port)] [-psXXXX (sub port)] ['host:port,...' (sub servers)]
 ```
 
 2. Arrancar forum - Run forum
@@ -93,7 +92,7 @@ npm install
 2. Arrancar dmserver - Run dmserver
 
 ```
-node dmserver.js ['host:port' (rep port)] [Port (pub port)]
+node dmserver.js ['host:port' (rep port)] [-ppXXXX (pub port)] [-psXXXX (sub port)]
 ```
 
 3. Ejecutar dmclient - Run dmclient
@@ -102,7 +101,7 @@ node dmserver.js ['host:port' (rep port)] [Port (pub port)]
 node dmclient.js 'operation' [arg1 ...]
 
 Ex:
-node dmclient.js "publish public message" '{"msg":"Test dmClient","from":"mudito","isPrivate":false,"to":"id0","ts":"2020-01-18T20:10:33.896Z"}'
+node dmclient.js "add public message" '{"msg":"Test dmClient","from":"mudito","isPrivate":false,"to":"id0","ts":"2020-01-18T20:10:33.896Z"}'
 ```
 
 ---
