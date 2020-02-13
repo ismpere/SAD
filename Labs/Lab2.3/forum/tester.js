@@ -44,14 +44,14 @@ function executeTest(option) {
     case "1.1":
       console.log("FIFO Test without delay\n");
       initBaseForum(false);
-      testClient("publish public message", JSON.stringify(MSG_TEST_1));
-      testClient("publish public message", JSON.stringify(MSG_TEST_2));
+      testClient("add public message", JSON.stringify(MSG_TEST_1));
+      testClient("add public message", JSON.stringify(MSG_TEST_2));
       break;
     case "1.2":
       console.log("FIFO Test with delay\n");
       initBaseForum(true);
-      testClient("publish public message", JSON.stringify(MSG_TEST_1));
-      testClient("publish public message", JSON.stringify(MSG_TEST_2));
+      testClient("add public message", JSON.stringify(MSG_TEST_1));
+      testClient("add public message", JSON.stringify(MSG_TEST_2));
       break;
     case "2":
       casualTest();
@@ -69,8 +69,8 @@ function sequentialTest() {
   initBaseForum();
 
   for (i = 0; i < SEQUENTIAL_TESTS; i++) {
-    testClient("publish public message", JSON.stringify(MSG_TEST_1));
-    testClient("publish public message", JSON.stringify(MSG_TEST_2));
+    testClient("add public message", JSON.stringify(MSG_TEST_1));
+    testClient("add public message", JSON.stringify(MSG_TEST_2));
   }
 }
 
@@ -78,31 +78,31 @@ function casualTest() {
   console.log("Casual Test\n");
   // Main forum in localhost:10000 with a delay of 1000 milliseconds
   executeCommandLine(
-    "node dmserver.js 'tcp://127.0.0.1:9006,tcp://127.0.0.1:9009' -r1000"
+    "node dmserver.js 'tcp://127.0.0.1:9007,tcp://127.0.0.1:9011' -r1000"
   );
   executeCommandLine("node forum.js");
 
   // Second forum in localhost:10001
   executeCommandLine(
-    "node dmserver.js 127.0.0.1:9005 9006 'tcp://127.0.0.1:9001,tcp://127.0.0.1:9009'"
+    "node dmserver.js 127.0.0.1:9005 -pp9006 -ps9007 'tcp://127.0.0.1:9002,tcp://127.0.0.1:9011'"
   );
   executeCommandLine("node forum.js 127.0.0.1:9005 9006 -p10001");
 
   // Third forum in localhost:10002
   executeCommandLine(
-    "node dmserver.js 127.0.0.1:9008 9009 'tcp://127.0.0.1:9001,tcp://127.0.0.1:9006'"
+    "node dmserver.js 127.0.0.1:9009 -pp9010 -ps9011 'tcp://127.0.0.1:9002,tcp://127.0.0.1:9007'"
   );
-  executeCommandLine("node forum.js 127.0.0.1:9008 9009 -p10002");
+  executeCommandLine("node forum.js 127.0.0.1:9009 9010 -p10002");
 
   // Wait to forums init
   delay(INIT_FORUM_DELAY);
 
   // Send first message to S1
-  testClient("publish public message", JSON.stringify(MSG_TEST_1));
+  testClient("add public message", JSON.stringify(MSG_TEST_1));
 
   // Send second message to S2
   testClient(
-    "publish public message",
+    "add public message",
     JSON.stringify(MSG_TEST_2),
     SERVER_ADDRESS_2
   );
