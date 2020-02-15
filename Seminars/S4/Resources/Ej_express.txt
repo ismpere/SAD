@@ -1,0 +1,45 @@
+Cambios en la versión de Express 4.x
+____________________________________
+
+Como en todo desarrollo que use un módulo de terceros, nuevas versiones implican la necesidad
+de plantearse mantener el uso de una versión (puede hacerse si la aplicación está ya terminada) o 
+realizar los cambios para adaptarse a la nueva versión (se pueden incorporar novedades interesantes 
+para el proyecto,etc..).
+
+En este caso, hace menos de un año anunciaron la versión de Express 4.0 que incluye
+algunos cambios que afectan de manera bastante notable a Express.
+
+Dichos cambios los podéis encontrar resumidos en:
+
+https://github.com/strongloop/express/wiki/Migrating-from-3.x-to-4.x
+
+Pero el más importante sin duda es que express ya no utiliza connect, sino que las funciones que
+se requieran deben añadirse con el require y el módulo correspondiente (excepto el 'static').
+ De esta manera estos modulos pueden desarrollarse y actualizarse de manera separada, sin afectar
+directamente a Express.
+
+Os he dejado dos versiones del ejemplo visto en clase:
+
+Ejexp1_V3.x (en el puerto 8080)
+Ejexp1_V4.x (en el puerto 1337)
+
+Ambos funcionan de manera similar, para instalarlos podéis ejecutar npm install, dado que vienen con un
+fichero package.json donde se declaran las dependencias. Podéis ver que en el caso de la versión que utiliza 
+Express V4.x se requieren más dependencias, una para cada módulo.
+
+ Los puertos los he cambiado por si queréis usarlos al mismo tiempo. Desde el navegador probad localhost:8080 (o 1337).
+Para ver el comportamiento inducido por la función static, podéis ponerle un fichero del directorio de trabajo actual,
+por ejemplo localhost:8080/exp1.js.
+
+ Como ejercicio opcional para entender express podríais tratar de modificar cualquiera de las versiones para que solo 
+pida autorización si se accede a un recurso que está en la ruta /blah.
+
+
+Un saludo,
+Mario González.
+
+
+
+
+
+

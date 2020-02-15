@@ -1,0 +1,5 @@
+
+ Usando Zeromq realizar un nodo servidor mediante el modelo de publicación/subscripción envie el cambio a euros de distintas monedas, 
+y que los nodos subscriptores que estén interesados en una o más monedas.
+
+

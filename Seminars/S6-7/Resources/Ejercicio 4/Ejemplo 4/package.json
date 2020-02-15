@@ -1,0 +1,8 @@
+{
+  "name": "Ejemplo 4 Zeromq",
+  "version": "0.0.1",
+  "description": "Example with rep-req (server that request)",
+  "dependencies": {
+    "zmq": "2.13.0",
+  }
+}

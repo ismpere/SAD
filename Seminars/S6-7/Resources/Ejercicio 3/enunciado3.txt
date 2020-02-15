@@ -1,0 +1,13 @@
+
+ Usando Zeromq realizar un nodo servidor que genere mensajes cada segundo en un pipeline (modelo productor/consumidor). 
+En dicho mensaje aparecerá el timestamp y un contador. El nodo cliente debe recoger esos mensajes y sacarlos por 
+pantalla.
+
+ ¿Qué sucede si ponemos en marcha 2 nodos cliente?
+
+ ¿Y si tenemos dos servidores y un nodo cliente? ¿qué modificaciones son necesarias?
+ 
+ ¿Qué sucederá en caso de dos servidores y dos clientes? ¿Es el sistema escalable?
+
+
+

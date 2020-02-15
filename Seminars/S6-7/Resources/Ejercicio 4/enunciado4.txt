@@ -1,0 +1,5 @@
+
+ Basándose en el código del ejercicio 3, podríamos hacer que el servidor hiciera un request al nodo cliente. Es decir,
+el nodo servidor genera request que el nodo cliente debe contestar con el mismo mensaje (es necesario cambiar el módelo o patrón a Req-Rep tanto en 
+el cliente como en en servidor al crear el socket)
+

@@ -8,13 +8,14 @@ Subject Distributed Systems and Applications of the MUIInf of the UPV (Master's 
 
 El software necesario para ejecutar los ejercicios es:
 
-The neccessary software to run the seminars is:
+The neccessary software to run the exercises is:
 
 - [Node](https://nodejs.org) - El entorno de ejecución utilizado - The execution environment used
-- [Angular](https://angular.io) - El framework web utilizado- The web framework used
 - [Express](https://expressjs.com) - La infraestructura web utilizada - The web infraestructure used
-  <!-- - [MongoDB](https://www.mongodb.com) - La base de datos utilizada - The database used -->
+- [MongoDB](https://www.mongodb.com) - La base de datos utilizada - The database used
 - [ZeroMQ](https://zeromq.org/) - La librería de paso de mensajes utilizada - The messaging library used
+- [Multichain](https://www.multichain.com/) - El framework de blockchain utilizado - The blockchain framework used
+- [Docker](https://www.docker.com/) - El sistema de contenedores utilizado- The container system used
 
 ## Laboratorios - Labs
 
@@ -29,7 +30,7 @@ The labs done are in the Labs folder and are the following:
 - Lab 2.2: Backend distribuido. Grupo de servidores - Distributed Backend. Server group
 - Lab 2.3: Backend distribuido. Consistencia - Distributed Backend. Consistency
 
-<!-- ## Seminarios - Seminars
+## Seminarios - Seminars
 
 Los seminarios realizados son los siguientes:
 
@@ -39,7 +40,10 @@ The seminars done are the following:
 - Seminario 3 - Seminar 3: Sesión 2 Node - Node Session 2
 - Seminario 4 - Seminar 4: Express y Websockets - Express and Websockets
 - Seminario 5 - Seminar 5: Promesas - Promises
-- Seminario 6-7 - Seminar 6-7: ZeroMQ -->
+- Seminario 6-7 - Seminar 6-7: ZeroMQ
+- Seminario 8 - Seminar 8: Consistencia - Consistency
+- Seminario 10 - Seminar 10: Blockchain
+- Seminario 11 - Seminar 11: Despliegue de servicios - Service deployment
 
 ### Installing and executing
 
@@ -63,60 +67,22 @@ And execute
 node file.js
 ```
 
-<!-- End with an example of getting some data out of the system or using it for a little demo -->
-
-<!-- ## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system -->
-
-<!-- ## Built With
-
-- [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-- [Maven](https://maven.apache.org/) - Dependency Management
-- [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds -->
-
-<!-- ## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us. -->
-
-<!-- ## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). -->
-
 ## Authors
 
+### Labs
+
 - **Ismael Pérez Martín** - _Full Stack Developer_ - [GitHub - ismpere](https://github.com/ismpere)
+
+### Seminars
+
+- **Ismael Pérez Martín** - _Full Stack Developer_ - [GitHub - ismpere](https://github.com/ismpere)
+- **Carlos Herrera Piedra** - _Full Stack Developer_ - [GitHub - carhepi](https://github.com/carherpi)
+- **Jesús Enrique Vélez** - _Full Stack Developer_ - [GitHub - jesusinri](https://github.com/jesusinri)
 
 Consulte también la lista de [contribuidores](https://github.com/ismpere/SAD/graphs/contributors) que participaron en este proyecto.
 
 See also the list of [contributors](https://github.com/ismpere/SAD/graphs/contributors) who participated in this project.
 
-<!-- ## License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc -->

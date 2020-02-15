@@ -1,0 +1,8 @@
+{
+  "name": "Ejemplo 1 Zeromq",
+  "version": "0.0.1",
+  "description": "Server responds with time stamp",
+  "dependencies": {
+    "zmq": "2.13.0",
+  }
+}

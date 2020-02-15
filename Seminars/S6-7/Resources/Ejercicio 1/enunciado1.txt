@@ -1,0 +1,3 @@
+
+ Usando Zeromq realizar un nodo servidor que responda a una petición del cliente
+ con la hora en la que fue recibida esa petición. 

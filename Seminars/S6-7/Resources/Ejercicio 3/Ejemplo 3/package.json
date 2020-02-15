@@ -1,0 +1,8 @@
+{
+  "name": "Ejemplo 3 Zeromq",
+  "version": "0.0.1",
+  "description": "Example with producer-consumer",
+  "dependencies": {
+    "zmq": "2.13.0",
+  }
+}
