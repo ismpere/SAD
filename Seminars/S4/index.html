@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font: 13px Helvetica, Arial;
+      }
+      form {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: 0.5%;
+      }
+      form button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
+      .custom-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      .custom-list li {
+        padding: 5px 10px;
+      }
+      .custom-list li:nth-child(odd) {
+        background: #eee;
+      }
+      ul {
+        list-style: none;
+        word-wrap: break-word;
+      }
+
+      /* Pages */
+
+      .pages {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+
+      .page {
+        height: 100%;
+        position: absolute;
+        width: 100%;
+      }
+
+      /* Login Page */
+
+      .login.page {
+        background-color: #000;
+      }
+
+      .login.page .form {
+        height: 100px;
+        margin-top: -100px;
+        position: absolute;
+
+        text-align: center;
+        top: 50%;
+        width: 100%;
+      }
+
+      .login.page .form .usernameInput {
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid #fff;
+        outline: none;
+        padding-bottom: 15px;
+        text-align: center;
+        width: 400px;
+      }
+
+      .login.page .title {
+        font-size: 200%;
+      }
+
+      .login.page .usernameInput {
+        font-size: 200%;
+        letter-spacing: 3px;
+      }
+
+      .login.page .title,
+      .login.page .usernameInput {
+        color: #fff;
+        font-weight: 100;
+      }
+
+      .title {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+      }
+
+      .column {
+        float: left;
+        width: 50%;
+      }
+
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="pages">
+      <li class="chat page">
+        <div class="chatArea">
+          <div class="row">
+            <h2 class="title" id="lblUsername"></h2>
+          </div>
+          <div class="row">
+            <div class="column">
+              <h2 class="title">Messages</h2>
+              <ul class="custom-list" id="messages"></ul>
+            </div>
+            <div class="column">
+              <h2 class="title" id="lblUsers"></h2>
+              <ul class="custom-list" id="users"></ul>
+            </div>
+          </div>
+        </div>
+        <form action="">
+          <input class="inputMessage" id="m" autocomplete="off" /><button>
+            Send
+          </button>
+        </form>
+      </li>
+      <li class="login page">
+        <div class="form">
+          <h3 class="title">What's your nickname?</h3>
+          <input class="usernameInput" type="text" maxlength="14" />
+        </div>
+      </li>
+    </ul>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      var $window = $(window);
+
+      var $usernameInput = $(".usernameInput"); // Input for username
+      var $inputMessage = $(".inputMessage"); // Input for username
+
+      var $loginPage = $(".login.page"); // The login page
+      var $chatPage = $(".chat.page"); // The chatroom page
+
+      var username;
+      var typing = false;
+      var lastTypingTime;
+
+      const TYPING_TIMER_LENGTH = 400; // ms
+
+      $("form").submit(function(e) {
+        var msgStr = $("#m").val();
+        e.preventDefault();
+        var data = {
+          typing: false,
+          username: username,
+          msg: msgStr
+        };
+        addMessage(data);
+        socket.emit("chat message", msgStr);
+        $("#m").val("");
+        return false;
+      });
+
+      // Sets the client's username
+      const setUsername = () => {
+        username = $usernameInput.val().trim();
+
+        // If the username is valid
+        if (username) {
+          $loginPage.fadeOut();
+          $chatPage.show();
+          $loginPage.off("click");
+
+          // Tell the server your username
+          socket.emit("add user", username);
+          updateUsername(username);
+        }
+      };
+
+      const updateUsername = username => {
+        document.getElementById("lblUsername").innerHTML = "User: " + username;
+      };
+
+      const addMessage = data => {
+        var typingClass = data.typing ? "typing" : "";
+        var strMsg = data.typing ? "is typing..." : data.msg;
+        $("#messages").append(
+          $('<li class="message">')
+            .text(data.username + ": " + strMsg)
+            .data("username", data.username)
+            .addClass(typingClass)
+        );
+      };
+
+      // Adds the visual chat typing message
+      const addChatTyping = data => {
+        if (getTypingMessages(data.username).length == 0) {
+          data["typing"] = true;
+          addMessage(data);
+        }
+      };
+
+      // Removes the visual chat typing message
+      const removeChatTyping = username => {
+        getTypingMessages(username).fadeOut(function() {
+          $(this).remove();
+        });
+      };
+
+      // Gets the 'X is typing' messages of a user
+      const getTypingMessages = username => {
+        return $(".typing").filter(function(i) {
+          return $(this).data("username") === username;
+        });
+      };
+
+      // Updates the typing event
+      const updateTyping = () => {
+        if (!typing) {
+          typing = true;
+          socket.emit("typing");
+        }
+        lastTypingTime = new Date().getTime();
+
+        setTimeout(() => {
+          var typingTimer = new Date().getTime();
+          var timeDiff = typingTimer - lastTypingTime;
+          if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
+            socket.emit("stop typing");
+            typing = false;
+          }
+        }, TYPING_TIMER_LENGTH);
+      };
+
+      const addUser = username => {
+        $("#users").append(
+          $("<li>")
+            .text(username)
+            .data("username", username)
+            .addClass("user")
+        );
+      };
+
+      const deleteUser = username => {
+        var userLines = $(".user").filter(function(i) {
+          return $(this).data("username") === username;
+        });
+        userLines.fadeOut(function() {
+          $(this).remove();
+        });
+      };
+
+      function updateUsersLabel(users) {
+        document.getElementById("lblUsers").innerHTML =
+          "Users ( " + users + " )";
+      }
+
+      $inputMessage.on("input", () => {
+        updateTyping();
+      });
+
+      // When login success the users label is updated
+      socket.on("login", data => {
+        data.clients.forEach(client => addUser(client));
+        updateUsersLabel(data.clients.length);
+      });
+
+      // Whenever the server emits 'typing', show the typing message
+      socket.on("typing", data => {
+        addChatTyping(data);
+      });
+
+      // Whenever the server emits 'stop typing', kill the typing message
+      socket.on("stop typing", data => {
+        removeChatTyping(data.username);
+      });
+
+      socket.on("chat message", function(msg) {
+        removeChatTyping(msg.username);
+        msg["typing"] = false;
+        addMessage(msg);
+      });
+
+      socket.on("user connected", function(data) {
+        if (data.username !== username) {
+          addUser(data.username);
+          updateUsersLabel(data.users);
+          $("#messages").append(
+            $("<li>").text(data.username + " is now connected!")
+          );
+        }
+      });
+
+      socket.on("user disconnected", function(data) {
+        if (data.username !== username) {
+          deleteUser(data.username);
+          updateUsersLabel(data.users);
+          $("#messages").append(
+            $("<li>").text(data.username + " is disconnected")
+          );
+        }
+      });
+
+      $window.keydown(event => {
+        // When the client hits ENTER on their keyboard in login
+        if (event.which === 13 && !username) {
+          setUsername();
+        }
+      });
+    </script>
+  </body>
+</html>

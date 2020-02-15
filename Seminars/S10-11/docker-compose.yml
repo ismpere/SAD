@@ -1,0 +1,31 @@
+version: '3'
+services:
+  forone:
+    build: 
+      context: ./forum/
+      args:
+        otherhost: "tcp://forotwo:1016,tcp://forotree:1016"
+    ports:
+    - "1000:1000"
+    - "1011:1011"
+    - "1016:1016"    
+  forotwo:
+    build: 
+      context: ./forum/
+      args:
+        otherhost: "tcp://forone:1016,tcp://forotree:1016"
+    ports:
+    - "1001:1000"
+    - "1012:1011"
+    - "1017:1016"    
+  forotree:
+    build: 
+      context: ./forum/
+      args:
+        otherhost: "tcp://forone:1016,tcp://forotwo:1016"
+    ports:
+    - "1003:1000"
+    - "1013:1011"
+    - "1018:1016"
+    
+

@@ -1,0 +1,9 @@
+
+ENUNCIADO
+
+Vamos a realizar una función que ejecute dos tareas asincrónicas mediante el uso de Promesas.
+ La primera leera el fichero 'file.txt' del directorio actual y con su contenido realizará
+  una petición HTTP.
+
+Se trata de convertir la ejecución de dos funciones asincrónicas a promesas.
+

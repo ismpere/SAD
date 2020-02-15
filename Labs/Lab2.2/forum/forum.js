@@ -55,14 +55,9 @@ function on_startup() {
       "\n"
   );
   dm.Start(HOST, PORT);
-  zmqSub.bind(URL_SUB, function(err) {
-    if (err) {
-      console.error("Listening suscriber error: " + err + ": " + URL_SUB);
-    } else {
-      zmqSub.subscribe(TOPIC);
-      console.log("Subscriber connected to " + URL_SUB + "...\n");
-    }
-  });
+  zmqSub.connect(URL_SUB);
+  zmqSub.subscribe(TOPIC);
+  console.log("Subscriber connected to " + URL_SUB + "...\n");
 }
 
 // serve static css as is
@@ -96,9 +91,7 @@ zmqSub.on("message", function(topic, msg) {
       "containing message:",
       msgStr + "\n"
     );
-    dm.addPublicMessage(msgJson, function() {
-      io.emit("message", msgStr);
-    });
+    io.emit("message", msgStr);
   }
 });
 
@@ -125,7 +118,7 @@ io.on("connection", function(sock) {
         io.emit("message", JSON.stringify(msg));
       });
     } else {
-      dm.publishPublicMessage(msg, function() {
+      dm.addPublicMessage(msg, function() {
         console.log("Msg: " + JSON.stringify(msg) + " published succesfully\n");
       });
     }

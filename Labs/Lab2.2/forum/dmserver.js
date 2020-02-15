@@ -4,10 +4,13 @@ var dm = require("./dm.js");
 var i;
 var inputPort;
 var inputPortPub;
+var inputPortSub;
 var inputHost;
 var servers;
-var subZmqSockets = [];
+var pubZmqSockets = [];
 var zmqRep = zmq.socket("rep");
+var zmqPubForum = zmq.socket("pub");
+var zmqSubServers = zmq.socket("sub");
 
 // Process the input args
 if (process.argv.length > 2) {
@@ -16,23 +19,27 @@ if (process.argv.length > 2) {
 
     if (input.includes("tcp://")) {
       servers = input.split(",");
+    } else if (input.includes("-ps")) {
+      inputPortSub = parseInt(input.replace("-ps", ""));
+    } else if (input.includes("-pp")) {
+      inputPortPub = parseInt(input.replace("-pp", ""));
     } else if (input.includes(":")) {
       inputHost = input.split(":")[0];
       inputPort = input.split(":")[1];
-    } else {
-      inputPortPub = input;
     }
   }
 }
 
 // Set port and host values depending on the input args
 const PORT = process.env.PORT || inputPort || 9000;
-const PORT_PUB = process.env.PORT || inputPortPub || 9001;
+const PORT_PUB = inputPortPub || 9001;
+const PORT_SUB = inputPortSub || 9002;
 const HOST = inputHost || "127.0.0.1";
 const URL = "tcp://" + HOST + ":" + PORT;
-const URL_PUB = "tcp://" + HOST + ":" + PORT_PUB;
+const URL_PUB_FORUM = "tcp://" + HOST + ":" + PORT_PUB;
+const URL_SUB_SERVERS = "tcp://" + HOST + ":" + PORT_SUB;
 const TOPIC = "checkpoint";
-const SERVERS = servers ? [URL_PUB].concat(servers) : [URL_PUB];
+const SERVERS = servers ? servers : [];
 
 console.log("Suscriber server list: " + SERVERS);
 
@@ -40,24 +47,90 @@ zmqRep.bind(URL, function(err) {
   if (err) {
     console.error("Listening replier error: " + err + ": " + URL);
   } else {
-    console.log("Listening replier on " + URL + "...\n");
+    console.log("Listening replier on " + URL + "...");
 
-    for (i = 0; i < SERVERS.length; i++) {
-      var url = SERVERS[i];
-      var zmqPub = zmq.socket("pub");
-      zmqPub.connect(url);
-      console.log("Listening publisher on " + url + "..." + "\n");
-      subZmqSockets.push(zmqPub);
-      // Start server when every socket is connected
-      if (subZmqSockets.length === SERVERS.length) {
-        startServer();
+    zmqPubForum.bind(URL_PUB_FORUM, function(err2) {
+      if (err2) {
+        console.error(
+          "Listening forum publisher error: " + err + ": " + URL_PUB_FORUM
+        );
+      } else {
+        console.log("Binded forum publisher on " + URL_PUB_FORUM + "...");
+
+        zmqSubServers.bind(URL_SUB_SERVERS, function(err3) {
+          if (err3) {
+            console.error(
+              "Listening servers suscriber error: " +
+                err +
+                ": " +
+                URL_SUB_SERVERS
+            );
+          } else {
+            console.log(
+              "Listening servers suscriber on " + URL_SUB_SERVERS + "...\n"
+            );
+            zmqSubServers.subscribe(TOPIC);
+
+            if (SERVERS.length === 0) {
+              startServer();
+            } else {
+              connectPublishSocketsAnsStart();
+            }
+          }
+        });
       }
-    }
+    });
   }
 });
 
+function connectPublishSocketsAnsStart() {
+  for (i = 0; i < SERVERS.length; i++) {
+    var url = SERVERS[i];
+    var zmqPub = zmq.socket("pub");
+    zmqPub.connect(url);
+    console.log("Connected publisher on " + url + "..." + "\n");
+    pubZmqSockets.push(zmqPub);
+    // Start server when every socket is connected
+    if (pubZmqSockets.length === SERVERS.length) {
+      console.log();
+      startServer();
+    }
+  }
+}
+
 function startServer() {
   console.log("Starting server...\n");
+  startReqSocket();
+  startServersSubSocket();
+  // Add a 'close' event handler to this instance of socket
+  pubZmqSockets.forEach(zmqPub => closeSocket(zmqPub));
+}
+
+function startServersSubSocket() {
+  zmqSubServers.on("message", function(topic, msg) {
+    var msgStr;
+    var msgJson;
+    if (msg) {
+      msgStr = msg.toString();
+      try {
+        msgJson = JSON.parse(msgStr);
+      } catch (e) {
+        console.log("Error parsing msg: " + e);
+      }
+    }
+    if (msgJson) {
+      console.log(
+        "received a message related to:",
+        topic.toString(),
+        "containing message:",
+        msgStr + "\n"
+      );
+      publishForumMessage(msgJson);
+    }
+  });
+}
+
+function startReqSocket() {
   // Listen client connections
   zmqRep.on("message", function(data) {
     console.log("request comes in..." + data);
@@ -98,8 +171,8 @@ function startServer() {
         reply.obj = dm.addSubject(invo.sbj);
         break;
       case "add public message":
-        dm.addPublicMessage(invo.msg);
-        console.log("Add public message");
+        publishForumMessage(invo.msg);
+        pubZmqSockets.forEach(zmqPub => publishMessage(zmqPub, invo.msg));
         break;
       case "add private message":
         dm.addPrivateMessage(invo.msg);
@@ -110,13 +183,6 @@ function startServer() {
       "\n###################################################################\n"
     );
 
-    // Switch to pub options
-    switch (invo.what) {
-      case "publish public message":
-        subZmqSockets.forEach(zmqPub => publishMessage(zmqPub, invo.msg));
-        break;
-    }
-
     zmqRep.send(JSON.stringify(reply));
   });
 
@@ -124,9 +190,12 @@ function startServer() {
   zmqRep.on("close", function(data) {
     console.log("Connection closed");
   });
+}
 
-  // Add a 'close' event handler to this instance of socket
-  subZmqSockets.forEach(zmqPub => closeSocket(zmqPub));
+function publishForumMessage(msg) {
+  dm.addPublicMessage(msg);
+  console.log("Add public message");
+  publishMessage(zmqPubForum, msg);
 }
 
 function publishMessage(zmqPub, msg) {

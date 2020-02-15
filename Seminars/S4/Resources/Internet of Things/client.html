@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+	
+      <script type="text/javascript">
+         function WebSocketTest()
+         {
+            if ("WebSocket" in window)
+            {
+               alert("WebSocket is supported by your Browser!");
+               
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.0.2:82");
+
+               ws.onopen = function()
+               {
+                  // Web Socket is connected, send data using send()
+		  var req={'action':'update', 'target':'100013e8c0','value':{'switch' : 'off'}};
+                  ws.send(JSON.stringify(req));
+                  alert("Message is sent...");
+               };
+
+            ws.onmessage = function (evt) 
+               { 
+                  var received_msg = evt.data;
+                  alert("Message is received...");
+               };
+				
+               ws.onclose = function()
+               { 
+                  // websocket is closed.
+                  alert("Connection is closed..."); 
+               };
+					
+               window.onbeforeunload = function(event) {
+                  socket.close();
+               };
+            }
+            
+            else
+            {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+      </script>
+		
+   </head>
+   <body>
+   
+      <div id="sse">
+         <a href="javascript:WebSocketTest()">Run WebSocket</a>
+      </div>
+      
+   </body>
+</html>

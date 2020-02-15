@@ -1,0 +1,8 @@
+{
+  "name": "Ejemplo 2 Zeromq",
+  "version": "0.0.1",
+  "description": "Example with publisher-subscriptor",
+  "dependencies": {
+    "zmq": "2.13.0",
+  }
+}
